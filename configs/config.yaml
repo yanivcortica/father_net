@@ -1,0 +1,82 @@
+device: cuda:0
+experiment_name: unet
+checkpoints_folder: ./checkpoints
+results_folder: ./results
+num_classes: 5
+model:
+  name: Unet
+  args: { in_channels: 1, classes: 5, decoder_use_batchnorm: False }
+# loss:
+#   name: SoftCrossEntropyLoss
+#   args: {}
+# metrics:
+#   name: JaccardIndex
+#   args:
+#     task: multiclass
+#     num_classes: 3
+data_root: /home/yaniv.sheinfeld/data/severstal
+# train_transform:
+#   - name: RandomBrightnessContrast
+#     args:
+#       brightness_limit: 0.3
+#       contrast_limit: 0.3
+#       p: 0.5
+      
+#   - name: RandomRotate90
+#     args:
+#       p: 0.5
+#   - name: Flip
+#     args:
+#       p: 0.5
+
+#   - name: Normalize
+#     args:
+#       mean: 0.449
+#       std: 0.226
+#       #mean: 0
+#       #std: 1
+
+#   - name: ToTensorV2
+#     args:
+#       transpose_mask: False
+
+# test_transform:
+#   - name: Normalize
+#     args:
+#       mean: 0.449
+#       std: 0.226
+#       #mean: 0
+#       #std: 1
+#   - name: ToTensorV2
+#     args:
+#       transpose_mask: False
+
+train_dataloader:
+  batch_size: 4
+  shuffle: True
+  num_workers: 4
+  drop_last: True
+
+
+val_dataloader:
+  batch_size: 4
+  shuffle: False
+  num_workers: 4
+  drop_last: False
+  
+loss:
+  name: DiceLoss
+  args: {}
+
+optimizer:
+  type: Adam
+  args: { lr: 0.0001, weight_decay: 0.00001}
+  
+  
+
+train:
+  init:
+    amp_mode: amp
+    scaler: True
+  run:
+    max_epochs: 10
